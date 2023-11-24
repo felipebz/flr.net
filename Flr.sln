@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flr", "src\Flr\Flr.csproj", "{BE5EBA44-E144-43FF-98BF-81484520941B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flr.Tests", "test\Flr.Tests\Flr.Tests.csproj", "{CE706BD8-EA76-474F-8AB2-6F9CF3715FCF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE5EBA44-E144-43FF-98BF-81484520941B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5EBA44-E144-43FF-98BF-81484520941B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5EBA44-E144-43FF-98BF-81484520941B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5EBA44-E144-43FF-98BF-81484520941B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE706BD8-EA76-474F-8AB2-6F9CF3715FCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE706BD8-EA76-474F-8AB2-6F9CF3715FCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE706BD8-EA76-474F-8AB2-6F9CF3715FCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE706BD8-EA76-474F-8AB2-6F9CF3715FCF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
