@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+
 using Flr.Channel;
 
 namespace Flr.Tests.Channel;
@@ -73,6 +74,7 @@ public partial class CodeReaderTest
 
     [GeneratedRegex("\\d+")]
     private static partial Regex DigitsRegex();
+
     [GeneratedRegex("\\w+")]
     private static partial Regex CharRegex();
 }

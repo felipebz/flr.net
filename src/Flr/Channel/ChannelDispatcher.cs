@@ -2,12 +2,12 @@
 
 public class ChannelDispatcher<T> : IChannel<T>
 {
-    private readonly bool failIfNoChannelToConsumeOneCharacter;
+    private readonly bool _failIfNoChannelToConsumeOneCharacter;
     public List<IChannel<T>> Channels { get; }
 
     private ChannelDispatcher(ChannelDispatcherBuilder builder)
     {
-        failIfNoChannelToConsumeOneCharacter = builder.FailIfNoChannelToConsumeOneCharacterOption;
+        _failIfNoChannelToConsumeOneCharacter = builder.FailIfNoChannelToConsumeOneCharacterOption;
         Channels = builder.Channels;
     }
 
@@ -19,15 +19,19 @@ public class ChannelDispatcher<T> : IChannel<T>
             var characterConsumed = Channels.Any(channel => channel.Consume(code, output));
             if (!characterConsumed)
             {
-                if (failIfNoChannelToConsumeOneCharacter)
+                if (_failIfNoChannelToConsumeOneCharacter)
                 {
-                    var message = $"None of the channel has been able to handle character '{code.Peek()}' (decimal value {code.Peek()}) at line {code.LinePosition}, column {code.ColumnPosition}";
+                    var message =
+                        $"None of the channel has been able to handle character '{code.Peek()}' (decimal value {code.Peek()}) at line {code.LinePosition}, column {code.ColumnPosition}";
                     throw new InvalidOperationException(message);
                 }
+
                 code.Pop();
             }
+
             nextChar = code.Peek();
         }
+
         return true;
     }
 
@@ -48,6 +52,7 @@ public class ChannelDispatcher<T> : IChannel<T>
             {
                 AddChannel(channel);
             }
+
             return this;
         }
 

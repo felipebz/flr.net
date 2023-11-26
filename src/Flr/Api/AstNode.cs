@@ -1,10 +1,10 @@
 namespace Flr.Api;
 
-public class AstNode(AstNodeType type, string name, Token? tokenOrNull)
+public class AstNode(IAstNodeType type, string name, Token? tokenOrNull)
 {
     private int _childIndex;
-    
-    public AstNodeType Type { get; } = type;
+
+    public IAstNodeType Type { get; } = type;
     public string Name { get; } = name;
     public Token? TokenOrNull { get; } = tokenOrNull;
     public Token Token => TokenOrNull ?? throw new ArgumentNullException(nameof(tokenOrNull));
@@ -16,12 +16,14 @@ public class AstNode(AstNodeType type, string name, Token? tokenOrNull)
     public int NumberOfChildren => Children.Count;
     public bool HasChildren => Children.Any();
     public bool HasToBeSkippedFromAst { get; }
-    
+
     public AstNode? NextAstNodeOrNull => NextSiblingOrNull ?? ParentOrNull?.NextAstNodeOrNull;
     public AstNode NextAstNode => NextAstNodeOrNull ?? throw new ArgumentNullException(nameof(NextAstNodeOrNull));
-    
+
     public AstNode? PreviousAstNodeOrNull => PreviousSiblingOrNull ?? ParentOrNull?.PreviousAstNodeOrNull;
-    public AstNode PreviousAstNode => PreviousAstNodeOrNull ?? throw new ArgumentNullException(nameof(PreviousAstNodeOrNull));
+
+    public AstNode PreviousAstNode =>
+        PreviousAstNodeOrNull ?? throw new ArgumentNullException(nameof(PreviousAstNodeOrNull));
 
     public AstNode? NextSiblingOrNull
     {
@@ -36,8 +38,9 @@ public class AstNode(AstNodeType type, string name, Token? tokenOrNull)
             return null;
         }
     }
+
     public AstNode NextSibling => NextSiblingOrNull ?? throw new ArgumentNullException(nameof(NextSiblingOrNull));
-    
+
     public AstNode? PreviousSiblingOrNull
     {
         get
@@ -51,8 +54,10 @@ public class AstNode(AstNodeType type, string name, Token? tokenOrNull)
             return null;
         }
     }
-    public AstNode PreviousSibling => PreviousSiblingOrNull ?? throw new ArgumentNullException(nameof(PreviousSiblingOrNull));
-    
+
+    public AstNode PreviousSibling =>
+        PreviousSiblingOrNull ?? throw new ArgumentNullException(nameof(PreviousSiblingOrNull));
+
     public string TokenValue => TokenOrNull?.Value ?? "";
     public string TokenOriginalValue => TokenOrNull?.OriginalValue ?? "";
     public int TokenLine => TokenOrNull?.Line ?? -1;
@@ -81,48 +86,48 @@ public class AstNode(AstNodeType type, string name, Token? tokenOrNull)
             AddChildToList(child);
         }
     }
-    
-    public bool Is(params AstNodeType[] types)
+
+    public bool Is(params IAstNodeType[] types)
     {
         return types.Contains(Type);
     }
-    
-    public bool IsNot(params AstNodeType[] types)
+
+    public bool IsNot(params IAstNodeType[] types)
     {
         return !Is(types);
     }
-    
-    public AstNode? GetFirstChildOrNull(params AstNodeType[] types)
+
+    public AstNode? GetFirstChildOrNull(params IAstNodeType[] types)
     {
         return Children.FirstOrDefault(child => types.Length == 0 || child.Is(types));
     }
-    
-    public AstNode GetFirstChild(params AstNodeType[] types)
+
+    public AstNode GetFirstChild(params IAstNodeType[] types)
     {
         return Children.First(child => types.Length == 0 || child.Is(types));
     }
-    
-    public AstNode? GetLastChildOrNull(params AstNodeType[] types)
+
+    public AstNode? GetLastChildOrNull(params IAstNodeType[] types)
     {
         return Children.LastOrDefault(child => types.Length == 0 || child.Is(types));
     }
-    
-    public AstNode GetLastChild(params AstNodeType[] types)
+
+    public AstNode GetLastChild(params IAstNodeType[] types)
     {
         return Children.Last(child => types.Length == 0 || child.Is(types));
     }
-    
-    public bool HasDirectChildren(params AstNodeType[] types)
+
+    public bool HasDirectChildren(params IAstNodeType[] types)
     {
         return Children.Any(child => types.Length == 0 || child.Is(types));
     }
-    
-    public IEnumerable<AstNode> GetChildren(params AstNodeType[] types)
+
+    public IEnumerable<AstNode> GetChildren(params IAstNodeType[] types)
     {
         return Children.Where(child => types.Length == 0 || child.Is(types));
     }
-    
-    public IEnumerable<AstNode> GetDescendants(params AstNodeType[] types)
+
+    public IEnumerable<AstNode> GetDescendants(params IAstNodeType[] types)
     {
         foreach (var child in Children)
         {
@@ -138,18 +143,18 @@ public class AstNode(AstNodeType type, string name, Token? tokenOrNull)
             }
         }
     }
-    
-    public AstNode? GetFirstDescendantOrNull(params AstNodeType[] types)
+
+    public AstNode? GetFirstDescendantOrNull(params IAstNodeType[] types)
     {
         return GetDescendants(types).FirstOrDefault();
     }
-    
-    public AstNode GetFirstDescendant(params AstNodeType[] types)
+
+    public AstNode GetFirstDescendant(params IAstNodeType[] types)
     {
         return GetDescendants(types).First();
     }
-    
-    public bool HasDescendant(params AstNodeType[] types)
+
+    public bool HasDescendant(params IAstNodeType[] types)
     {
         return GetDescendants(types).Any();
     }

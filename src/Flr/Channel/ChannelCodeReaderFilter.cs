@@ -25,7 +25,8 @@ public class ChannelCodeReaderFilter<T>(params IChannel<T>[] channels) : CodeRea
         }
 
         var initialOffset = currentOffset;
-        while (currentOffset < filteredBuffer.Length) {
+        while (currentOffset < filteredBuffer.Length)
+        {
             if (_internalCodeReader.Peek() == char.MinValue)
             {
                 break;

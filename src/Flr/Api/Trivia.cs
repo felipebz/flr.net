@@ -7,8 +7,8 @@ public class Trivia
     private readonly TriviaKind _kind;
     public Token[] Tokens { get; }
     public Token Token => Tokens[0];
-    public bool IsComment => _kind == TriviaKind.COMMENT;
-    public bool IsSkippedText => _kind == TriviaKind.SKIPPED_TEXT;
+    public bool IsComment => _kind == TriviaKind.Comment;
+    public bool IsSkippedText => _kind == TriviaKind.SkippedText;
 
     public Trivia(TriviaKind kind, params Token[] tokens)
     {
@@ -38,7 +38,7 @@ public class Trivia
 
     public enum TriviaKind
     {
-        COMMENT,
-        SKIPPED_TEXT,
+        Comment,
+        SkippedText,
     }
 }

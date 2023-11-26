@@ -2,16 +2,16 @@
 
 public class CodeBuffer
 {
-    private readonly int tabWidth;
-    protected readonly Cursor cursor = new();
+    private readonly int _tabWidth;
+    protected readonly Cursor _cursor = new();
 
     public CodeBuffer(TextReader initialCodeReader, CodeReaderConfiguration configuration)
     {
         using (initialCodeReader)
         {
             LastChar = char.MinValue;
-            
-            tabWidth = configuration.TabWidth;
+
+            _tabWidth = configuration.TabWidth;
             var filteredReader = configuration.Filters
                 .Aggregate(initialCodeReader, (current, codeReaderFilter) =>
                     new Filter(current, codeReaderFilter, configuration));
@@ -20,45 +20,45 @@ public class CodeBuffer
             {
                 Buffer = Read(filteredReader);
             }
-            
         }
     }
 
     public CodeBuffer(string code, CodeReaderConfiguration configuration) : this(new StringReader(code), configuration)
     {
     }
-    
+
     public string Buffer { get; }
-    
+
     public int BufferPosition { get; private set; }
-    
+
     public char LastChar { get; private set; }
-    
+
     public int LinePosition
     {
-        get => cursor.Line;
-        set => cursor.Line = value;
+        get => _cursor.Line;
+        set => _cursor.Line = value;
     }
 
     public int ColumnPosition
     {
-        get => cursor.Column;
-        set => cursor.Column = value;
+        get => _cursor.Column;
+        set => _cursor.Column = value;
     }
-    
+
     public int Length => Buffer.Length - BufferPosition;
 
     private static string Read(TextReader reader)
     {
         return reader.ReadToEnd();
     }
-    
+
     public char Pop()
     {
         if (BufferPosition >= Buffer.Length)
         {
             return char.MinValue;
         }
+
         var character = Buffer[BufferPosition++];
         UpdateCursorPosition(character);
         LastChar = character;
@@ -71,14 +71,14 @@ public class CodeBuffer
         {
             case '\n':
             case '\r' when Peek() != '\n':
-                cursor.Line++;
-                cursor.Column = 0;
+                _cursor.Line++;
+                _cursor.Column = 0;
                 break;
             case '\t':
-                cursor.Column += tabWidth;
+                _cursor.Column += _tabWidth;
                 break;
             default:
-                cursor.Column++;
+                _cursor.Column++;
                 break;
         }
     }
@@ -97,18 +97,19 @@ public class CodeBuffer
     {
         public int Line { get; set; } = 1;
         public int Column { get; set; }
-        
+
         public Cursor Clone()
         {
             return new Cursor { Line = Line, Column = Column };
         }
     }
-    
+
     private class Filter : TextReader
     {
         private readonly CodeReaderFilter<object> _codeReaderFilter;
 
-        public Filter(TextReader filteredReader, CodeReaderFilter<object> codeReaderFilter, CodeReaderConfiguration configuration)
+        public Filter(TextReader filteredReader, CodeReaderFilter<object> codeReaderFilter,
+            CodeReaderConfiguration configuration)
         {
             _codeReaderFilter = codeReaderFilter;
             _codeReaderFilter.Configuration = configuration.CloneWithoutCodeReaderFilters();
@@ -119,7 +120,7 @@ public class CodeBuffer
         {
             throw new NotSupportedException();
         }
-        
+
         public override int Read(char[] buffer, int offset, int count)
         {
             return _codeReaderFilter.Read(buffer, offset, count);

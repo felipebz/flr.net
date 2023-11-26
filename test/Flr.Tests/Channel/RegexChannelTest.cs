@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+
 using Flr.Channel;
 
 namespace Flr.Tests.Channel;
@@ -16,7 +17,7 @@ public partial class RegexChannelTest
         dispatcher.Consume(new CodeReader("my word"), output);
         Assert.Equal("<w>my</w> <w>word</w>", output.ToString());
     }
-    
+
     [Fact]
     public void ShouldMatchTokenLongerThanBuffer()
     {
@@ -33,7 +34,7 @@ public partial class RegexChannelTest
     {
         [GeneratedRegex("^\"[^\"]*\"")]
         private static partial Regex Regex();
-        
+
         protected override void Consume(StringBuilder builder, StringBuilder output)
         {
             output.Append($"<literal>{builder}</literal>");
@@ -44,14 +45,14 @@ public partial class RegexChannelTest
     {
         [GeneratedRegex("^\\w+")]
         private static partial Regex Regex();
-        
+
         protected override void Consume(StringBuilder builder, StringBuilder output)
         {
             output.Append($"<w>{builder}</w>");
         }
     }
 
-    private class BlackholeChannel: IChannel<StringBuilder>
+    private class BlackholeChannel : IChannel<StringBuilder>
     {
         public bool Consume(CodeReader code, StringBuilder output)
         {

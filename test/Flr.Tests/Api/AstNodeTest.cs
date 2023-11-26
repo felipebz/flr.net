@@ -52,5 +52,5 @@ public class AstNodeTest
         Assert.Empty(a1.GetDescendants(new NodeType()));
     }
 
-    private class NodeType : AstNodeType;
+    private class NodeType : IAstNodeType;
 }

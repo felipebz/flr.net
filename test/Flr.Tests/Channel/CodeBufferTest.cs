@@ -1,16 +1,17 @@
 ﻿using System.Text.RegularExpressions;
+
 using Flr.Channel;
 
 namespace Flr.Tests.Channel;
 
 public partial class CodeBufferTest
 {
-    private readonly CodeReaderConfiguration configuration = new();
-    
+    private readonly CodeReaderConfiguration _configuration = new();
+
     [Fact]
     public void TestPop()
     {
-        var code = new CodeBuffer("pa", configuration);
+        var code = new CodeBuffer("pa", _configuration);
         Assert.Equal('p', code.Pop());
         Assert.Equal('a', code.Pop());
         Assert.Equal(char.MinValue, code.Pop());
@@ -19,7 +20,7 @@ public partial class CodeBufferTest
     [Fact]
     public void TestPeek()
     {
-        var code = new CodeBuffer("pa", configuration);
+        var code = new CodeBuffer("pa", _configuration);
         Assert.Equal('p', code.Peek());
         Assert.Equal('p', code.Peek());
         code.Pop();
@@ -31,7 +32,7 @@ public partial class CodeBufferTest
     [Fact]
     public void TestLastCharacter()
     {
-        var code = new CodeBuffer("bar", configuration);
+        var code = new CodeBuffer("bar", _configuration);
         Assert.Equal(char.MinValue, code.LastChar);
         code.Pop();
         Assert.Equal('b', code.LastChar);
@@ -40,7 +41,7 @@ public partial class CodeBufferTest
     [Fact]
     public void TestGetColumnAndLinePosition()
     {
-        var code = new CodeBuffer("pa\nc\r\ns\r\n\r\n", configuration);
+        var code = new CodeBuffer("pa\nc\r\ns\r\n\r\n", _configuration);
         Assert.Equal(0, code.ColumnPosition);
         Assert.Equal(1, code.LinePosition);
         code.Pop(); // p
@@ -76,19 +77,21 @@ public partial class CodeBufferTest
     [Fact]
     public void TestCharAt()
     {
-        var code = new CodeBuffer("123456", configuration);
+        var code = new CodeBuffer("123456", _configuration);
         Assert.Equal('1', code[0]);
         Assert.Equal('6', code[5]);
     }
-    
+
     [Fact]
-    public void TestCharAtIndexOutOfBoundsException() {
-        var code = new CodeBuffer("12345", configuration);
+    public void TestCharAtIndexOutOfBoundsException()
+    {
+        var code = new CodeBuffer("12345", _configuration);
         Assert.Equal(char.MinValue, code[5]);
     }
-    
+
     [Fact]
-    public void TestReadWithSpecificTabWidth() {
+    public void TestReadWithSpecificTabWidth()
+    {
         var code = new CodeBuffer("pa\n\tc", new CodeReaderConfiguration { TabWidth = 4 });
         Assert.Equal('\n', code[2]);
         Assert.Equal('\t', code[3]);
@@ -116,7 +119,8 @@ public partial class CodeBufferTest
     [Fact]
     public void TestCodeReaderFilter()
     {
-        var code = new CodeBuffer("abcd12efgh34", new CodeReaderConfiguration { Filters = { new ReplaceNumbersFilter() }});
+        var code = new CodeBuffer("abcd12efgh34",
+            new CodeReaderConfiguration { Filters = { new ReplaceNumbersFilter() } });
         Assert.Equal('a', code[0]);
         Assert.Equal('-', code[4]);
         Assert.Equal('-', code[5]);
@@ -138,16 +142,18 @@ public partial class CodeBufferTest
         Assert.Equal('-', code.Pop());
         Assert.Equal('-', code.Pop());
     }
-    
+
     [Fact]
-    public void TheLengthShouldBeTheSameThanTheStringLength() {
-        var code = new CodeBuffer("myCode", configuration);
+    public void TheLengthShouldBeTheSameThanTheStringLength()
+    {
+        var code = new CodeBuffer("myCode", _configuration);
         Assert.Equal(6, code.Length);
     }
-    
+
     [Fact]
-    public void TheLengthShouldDecreaseEachTimeTheInputStreamIsConsumed() {
-        var code = new CodeBuffer("myCode", configuration);
+    public void TheLengthShouldDecreaseEachTimeTheInputStreamIsConsumed()
+    {
+        var code = new CodeBuffer("myCode", _configuration);
         code.Pop();
         code.Pop();
         Assert.Equal(4, code.Length);
@@ -156,11 +162,8 @@ public partial class CodeBufferTest
     [Fact]
     public void TestSeveralCodeReaderFilter()
     {
-        var code = new CodeBuffer("abcd12efgh34", new CodeReaderConfiguration { Filters =
-        {
-            new ReplaceNumbersFilter(),
-            new ReplaceCharFilter()
-        }});
+        var code = new CodeBuffer("abcd12efgh34",
+            new CodeReaderConfiguration { Filters = { new ReplaceNumbersFilter(), new ReplaceCharFilter() } });
         Assert.Equal('*', code[0]);
         Assert.Equal('-', code[4]);
         Assert.Equal('-', code[5]);
@@ -186,10 +189,8 @@ public partial class CodeBufferTest
     [Fact]
     public void TestChannelCodeReaderFilter()
     {
-        var code = new CodeBuffer("0123456789\nABCDEFGHIJ", new CodeReaderConfiguration { Filters =
-        {
-            new ChannelCodeReaderFilter<object>(new WindowingChannel())
-        }});
+        var code = new CodeBuffer("0123456789\nABCDEFGHIJ",
+            new CodeReaderConfiguration { Filters = { new ChannelCodeReaderFilter<object>(new WindowingChannel()) } });
         Assert.Equal('2', code[0]);
         Assert.Equal('7', code[5]);
         Assert.Equal('\n', code[6]);
@@ -218,7 +219,7 @@ public partial class CodeBufferTest
     {
         [GeneratedRegex("[a-zA-Z]")]
         private static partial Regex CharRegex();
-        
+
         public override int Read(char[] filteredBuffer, int offset, int length)
         {
             var tempBuffer = new char[filteredBuffer.Length];
@@ -237,7 +238,7 @@ public partial class CodeBufferTest
     {
         [GeneratedRegex("[0-9]")]
         private static partial Regex DigitsRegex();
-        
+
         public override int Read(char[] filteredBuffer, int offset, int length)
         {
             var tempBuffer = new char[filteredBuffer.Length];

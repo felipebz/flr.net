@@ -1,6 +1,6 @@
 namespace Flr.Api;
 
-public interface TokenType : AstNodeType
+public interface ITokenType : IAstNodeType
 {
     public string Name { get; }
     public string Value { get; }

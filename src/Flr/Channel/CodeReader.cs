@@ -5,18 +5,19 @@ namespace Flr.Channel;
 
 public class CodeReader : CodeBuffer
 {
-    public CodeReader(TextReader initialCodeReader, CodeReaderConfiguration configuration) : base(initialCodeReader, configuration)
+    public CodeReader(TextReader initialCodeReader, CodeReaderConfiguration configuration) : base(initialCodeReader,
+        configuration)
     {
     }
-    
+
     public CodeReader(string code, CodeReaderConfiguration configuration) : base(code, configuration)
     {
     }
-    
+
     public CodeReader(TextReader initialCodeReader) : base(initialCodeReader, new CodeReaderConfiguration())
     {
     }
-    
+
     public CodeReader(string code) : base(code, new CodeReaderConfiguration())
     {
     }
@@ -27,7 +28,7 @@ public class CodeReader : CodeBuffer
     {
         builder.Append(Pop());
     }
-    
+
     public char[] Peek(int length)
     {
         var result = new char[length];
@@ -38,9 +39,10 @@ public class CodeReader : CodeBuffer
             result[index++] = nextChar;
             nextChar = CharAt(index);
         }
+
         return result;
     }
-    
+
     public void PeekTo(Func<char, bool> matcher, StringBuilder builder)
     {
         var index = 0;
@@ -67,7 +69,7 @@ public class CodeReader : CodeBuffer
 
         if (match.Success)
         {
-            PreviousCursor = cursor.Clone();
+            PreviousCursor = _cursor.Clone();
             for (var i = 0; i < match.Length; i++)
             {
                 appendable.Append(Pop());

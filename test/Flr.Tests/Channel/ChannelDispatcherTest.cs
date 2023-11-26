@@ -1,4 +1,5 @@
 ﻿using System.Text;
+
 using Flr.Channel;
 
 namespace Flr.Tests.Channel;
@@ -17,7 +18,8 @@ public class ChannelDispatcherTest
     [Fact]
     public void ShouldAddChannels()
     {
-        var dispatcher = ChannelDispatcher<StringBuilder>.Builder().AddChannels(new SpaceDeletionChannel(), new FakeChannel()).Build();
+        var dispatcher = ChannelDispatcher<StringBuilder>.Builder()
+            .AddChannels(new SpaceDeletionChannel(), new FakeChannel()).Build();
         Assert.Equal(2, dispatcher.Channels.Count);
         Assert.IsType<SpaceDeletionChannel>(dispatcher.Channels[0]);
         Assert.IsType<FakeChannel>(dispatcher.Channels[1]);
@@ -45,6 +47,7 @@ public class ChannelDispatcherTest
             {
                 output.Append(code.Pop());
             }
+
             return true;
         }
     }
