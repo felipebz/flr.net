@@ -134,7 +134,7 @@ public class Token
 
         public TokenBuilder WithTrivia(IList<Trivia> trivia)
         {
-            Trivia = trivia;
+            Trivia = trivia.ToList();
             return this;
         }
 

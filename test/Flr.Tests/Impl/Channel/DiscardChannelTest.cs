@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 
-using Flr.Channel;
 using Flr.Impl;
 using Flr.Impl.Channel;
 
@@ -17,15 +16,10 @@ public partial class DiscardChannelTest
     [Fact]
     public void TestConsumeOneCharacter()
     {
-        Assert.True(Consume(" ", _output));
-        Assert.True(Consume("\t", _output));
-        Assert.False(Consume("g", _output));
-        Assert.False(Consume("-", _output));
-        Assert.False(Consume("1", _output));
-    }
-
-    private bool Consume(String code, LexerOutput output)
-    {
-        return _channel.Consume(new CodeReader(code), output);
+        Assert.True(_channel.Consume(" ", _output));
+        Assert.True(_channel.Consume("\t", _output));
+        Assert.False(_channel.Consume("g", _output));
+        Assert.False(_channel.Consume("-", _output));
+        Assert.False(_channel.Consume("1", _output));
     }
 }

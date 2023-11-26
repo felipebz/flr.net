@@ -16,6 +16,16 @@ public class Trivia
         Tokens = tokens;
     }
 
+    public static Trivia CreateComment(Token commentToken)
+    {
+        return new Trivia(TriviaKind.Comment, commentToken);
+    }
+
+    public static Trivia CreateSkippedText(Token skippedTextToken)
+    {
+        return new Trivia(TriviaKind.SkippedText, skippedTextToken);
+    }
+
     public override string ToString()
     {
         switch (Tokens.Length)
