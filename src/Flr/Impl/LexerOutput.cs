@@ -2,12 +2,12 @@ using Flr.Api;
 
 namespace Flr.Impl;
 
-public class LexerOutput(Uri uri)
+public class LexerOutput(Uri? uri = null)
 {
     private readonly List<Trivia> _trivias = new();
     private readonly List<Token> _tokens = new();
 
-    public Uri Uri { get; } = uri;
+    public Uri Uri { get; } = uri ?? new Uri("tests://unittest");
     public IEnumerable<Token> Tokens => new List<Token>(_tokens);
 
     public void AddTrivia(Trivia trivia)

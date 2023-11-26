@@ -54,12 +54,12 @@ public class CodeReader : CodeBuffer
         }
     }
 
-    public int PopTo(Regex matcher, StringBuilder appendable)
+    public int PopTo(Regex matcher, StringBuilder? appendable)
     {
         return PopTo(matcher, null, appendable);
     }
 
-    public int PopTo(Regex matcher, Regex? afterMatcher, StringBuilder appendable)
+    public int PopTo(Regex matcher, Regex? afterMatcher, StringBuilder? appendable)
     {
         var match = matcher.Match(Buffer[BufferPosition..]);
         if (match.Success && afterMatcher != null)
@@ -72,7 +72,7 @@ public class CodeReader : CodeBuffer
             PreviousCursor = _cursor.Clone();
             for (var i = 0; i < match.Length; i++)
             {
-                appendable.Append(Pop());
+                appendable?.Append(Pop());
             }
 
             return match.Length;
