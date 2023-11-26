@@ -56,6 +56,16 @@ public class ChannelDispatcher<T> : IChannel<T>
             return this;
         }
 
+        public ChannelDispatcherBuilder AddChannels(IEnumerable<IChannel<T>> channels)
+        {
+            foreach (var channel in channels)
+            {
+                AddChannel(channel);
+            }
+
+            return this;
+        }
+
         public ChannelDispatcherBuilder FailIfNoChannelToConsumeOneCharacter()
         {
             FailIfNoChannelToConsumeOneCharacterOption = true;

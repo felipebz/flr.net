@@ -100,6 +100,13 @@ public class Token
             return this;
         }
 
+        public TokenBuilder WithValueAndOriginalValue(string sameValue)
+        {
+            Value = sameValue;
+            OriginalValue = sameValue;
+            return this;
+        }
+
         public TokenBuilder WithValueAndOriginalValue(string value, string originalValue)
         {
             Value = value;
