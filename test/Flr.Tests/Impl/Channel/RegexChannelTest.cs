@@ -19,7 +19,7 @@ public partial class RegexChannelTest
     {
         Assert.False(_channel.Consume("Not a number", _output));
         Assert.True(_channel.Consume("56;", _output));
-        Assert.Contains(_output.Tokens, t => t.Type == GenericTokenType.Constant && t.Value == "56");
+        Assert.Contains(_output.Tokens, t => ReferenceEquals(t.Type, GenericTokenType.Constant) && t.Value == "56");
     }
 
     [Fact]
