@@ -1,14 +1,19 @@
 namespace Flr.Api;
 
-public class GenericTokenType : ITokenType
+public record GenericTokenType : ITokenType
 {
-    public static GenericTokenType Comment = new("COMMENT");
-    public static GenericTokenType Identifier = new("IDENTIFIER");
-    public static GenericTokenType Literal = new("LITERAL");
-    public static GenericTokenType Constant = new("CONSTANT");
-    public static GenericTokenType Eof = new("EOF");
-    public static GenericTokenType Eol = new("EOL");
-    public static GenericTokenType UnknownChar = new("UNKNOWN_CHAR");
+    public readonly static GenericTokenType Comment = new(nameof(Comment));
+    public readonly static GenericTokenType Identifier = new(nameof(Identifier));
+    public readonly static GenericTokenType Literal = new(nameof(Literal));
+    public readonly static GenericTokenType Constant = new(nameof(Constant));
+    public readonly static GenericTokenType Eof = new(nameof(Eof));
+    public readonly static GenericTokenType Eol = new(nameof(Eol));
+    public readonly static GenericTokenType UnknownChar = new(nameof(UnknownChar));
+
+    public readonly static IEnumerable<ITokenType> Values = new[]
+    {
+        Comment, Identifier, Literal, Constant, Eof, Eol, UnknownChar
+    };
 
     private GenericTokenType(string identifier)
     {
