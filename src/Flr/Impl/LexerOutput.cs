@@ -8,7 +8,7 @@ public class LexerOutput(Uri? uri = null)
     private readonly List<Token> _tokens = new();
 
     public Uri Uri { get; } = uri ?? new Uri("tests://unittest");
-    public Token[] Tokens => _tokens.ToArray();
+    public IReadOnlyList<Token> Tokens => _tokens.AsReadOnly();
 
     public void AddTrivia(Trivia trivia)
     {
