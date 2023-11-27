@@ -23,7 +23,13 @@ public class Lexer
         return new LexerBuilder();
     }
 
-    private IEnumerable<Token> Lex(TextReader reader, LexerOutput output)
+    public IEnumerable<Token> Lex(string filePath, LexerOutput output)
+    {
+        using var reader = new StreamReader(filePath, _encoding);
+        return Lex(reader, output);
+    }
+
+    public IEnumerable<Token> Lex(TextReader reader, LexerOutput output)
     {
         var code = new CodeReader(reader, _configuration);
         try
