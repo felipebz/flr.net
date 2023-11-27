@@ -18,9 +18,10 @@ public class Lexer
         _channelDispatcher = builder.ChannelDispatcher;
     }
 
-    public LexerBuilder Builder()
+    // Do not use this method, it is intended for internal unit testing only
+    public IEnumerable<Token> Lex(string sourceCode)
     {
-        return new LexerBuilder();
+        return Lex(new StringReader(sourceCode), new LexerOutput());
     }
 
     public IEnumerable<Token> Lex(string filePath, LexerOutput output)
@@ -50,6 +51,11 @@ public class Lexer
                 $"Unable to lex source code at line : {code.LinePosition} and column : {code.ColumnPosition} in file: {output.Uri}",
                 e);
         }
+    }
+
+    public static LexerBuilder Builder()
+    {
+        return new LexerBuilder();
     }
 
     public class LexerBuilder
