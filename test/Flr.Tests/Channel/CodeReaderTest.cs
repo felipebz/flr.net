@@ -68,7 +68,7 @@ public partial class CodeReaderTest
         var token = new StringBuilder();
         Assert.Equal(-1, new CodeReader(new StringReader("123 ABC")).PopTo(digitMatcher, alphabeticMatcher, token));
         Assert.Equal("", token.ToString());
-        Assert.Equal(3, new CodeReader(new StringReader("123ABC")).PopTo(digitMatcher, alphabeticMatcher, token));
+        Assert.Equal(3, new CodeReader(new StringReader("123ABCD")).PopTo(digitMatcher, alphabeticMatcher, token));
         Assert.Equal("123", token.ToString());
     }
 

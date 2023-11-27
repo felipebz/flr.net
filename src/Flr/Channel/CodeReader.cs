@@ -64,7 +64,11 @@ public class CodeReader : CodeBuffer
         var match = matcher.Match(Buffer[BufferPosition..]);
         if (match.Success && afterMatcher != null)
         {
-            match = afterMatcher.Match(Buffer[(BufferPosition + match.Length)..]);
+            var afterMatch = afterMatcher.Match(Buffer[(BufferPosition + match.Length)..]);
+            if (!afterMatch.Success)
+            {
+                return -1;
+            }
         }
 
         if (match.Success)
