@@ -61,10 +61,11 @@ public class CodeReader : CodeBuffer
 
     public int PopTo(Regex matcher, Regex? afterMatcher, StringBuilder? appendable)
     {
-        var match = matcher.Match(Buffer[BufferPosition..]);
+        var match = matcher.Match(Buffer, BufferPosition, Buffer.Length - BufferPosition);
         if (match.Success && afterMatcher != null)
         {
-            var afterMatch = afterMatcher.Match(Buffer[(BufferPosition + match.Length)..]);
+            var afterMatch = afterMatcher.Match(Buffer, (BufferPosition + match.Length),
+                Buffer.Length - (BufferPosition + match.Length));
             if (!afterMatch.Success)
             {
                 return -1;
