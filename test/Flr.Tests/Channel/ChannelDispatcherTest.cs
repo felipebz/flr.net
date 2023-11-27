@@ -20,7 +20,7 @@ public class ChannelDispatcherTest
     {
         var dispatcher = ChannelDispatcher<StringBuilder>.Builder()
             .AddChannels(new SpaceDeletionChannel(), new FakeChannel()).Build();
-        Assert.Equal(2, dispatcher.Channels.Count);
+        Assert.Equal(2, dispatcher.Channels.Length);
         Assert.IsType<SpaceDeletionChannel>(dispatcher.Channels[0]);
         Assert.IsType<FakeChannel>(dispatcher.Channels[1]);
     }

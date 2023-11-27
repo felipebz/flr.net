@@ -3,12 +3,12 @@
 public class ChannelDispatcher<T> : IChannel<T>
 {
     private readonly bool _failIfNoChannelToConsumeOneCharacter;
-    public List<IChannel<T>> Channels { get; }
+    public IChannel<T>[] Channels { get; }
 
     private ChannelDispatcher(ChannelDispatcherBuilder builder)
     {
         _failIfNoChannelToConsumeOneCharacter = builder.FailIfNoChannelToConsumeOneCharacterOption;
-        Channels = builder.Channels;
+        Channels = builder.Channels.ToArray();
     }
 
     public bool Consume(CodeReader code, T output)
@@ -16,13 +16,22 @@ public class ChannelDispatcher<T> : IChannel<T>
         var nextChar = code.Peek();
         while (nextChar != char.MinValue)
         {
-            var characterConsumed = Channels.Any(channel => channel.Consume(code, output));
+            var characterConsumed = false;
+            for (int i = 0; i < Channels.Length; i++)
+            {
+                if (Channels[i].Consume(code, output))
+                {
+                    characterConsumed = true;
+                    break;
+                }
+            }
+
             if (!characterConsumed)
             {
                 if (_failIfNoChannelToConsumeOneCharacter)
                 {
                     var message =
-                        $"None of the channel has been able to handle character '{code.Peek()}' (decimal value {code.Peek()}) at line {code.LinePosition}, column {code.ColumnPosition}";
+                        $"None of the channel has been able to handle character '{code.Peek()}' (decimal value {(int)code.Peek()}) at line {code.LinePosition}, column {code.ColumnPosition}";
                     throw new InvalidOperationException(message);
                 }
 
