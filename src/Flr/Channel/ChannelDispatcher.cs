@@ -17,9 +17,9 @@ public class ChannelDispatcher<T> : IChannel<T>
         while (nextChar != char.MinValue)
         {
             var characterConsumed = false;
-            for (int i = 0; i < Channels.Length; i++)
+            foreach (var channel in Channels)
             {
-                if (Channels[i].Consume(code, output))
+                if (channel.Consume(code, output))
                 {
                     characterConsumed = true;
                     break;
