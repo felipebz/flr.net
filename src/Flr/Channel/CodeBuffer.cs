@@ -65,15 +65,12 @@ public class CodeBuffer
         return character;
     }
 
-    public char[] Pop(int numberOfChars)
+    public void Pop(int numberOfChars)
     {
-        var result = new char[numberOfChars];
         for (var i = 0; i < numberOfChars; i++)
         {
-            result[i] = Pop();
+            Pop();
         }
-
-        return result;
     }
 
     private void UpdateCursorPosition(char character)
