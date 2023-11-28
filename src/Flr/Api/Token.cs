@@ -1,7 +1,11 @@
+using System.Buffers;
+
 namespace Flr.Api;
 
 public class Token
 {
+    private static readonly SearchValues<char> LineBreaks = SearchValues.Create("\n\r");
+
     public ITokenType Type { get; }
     public string Value { get; }
     public string OriginalValue { get; }
@@ -22,18 +26,23 @@ public class Token
         Column = builder.Column;
         Trivia = builder.Trivia;
         GeneratedCode = builder.GeneratedCode;
+        EndLine = Line;
 
         var lastLineLength = 0;
-        var lineCount = 1;
 
-        if (Value.IndexOf('\n') != -1 || Value.IndexOf('\r') != -1)
+        var valueSpan = Value.AsSpan();
+        var pos = valueSpan.IndexOfAny(LineBreaks);
+        while (pos != -1)
         {
-            var lines = Value.Split('\n', '\r');
-            lineCount = lines.Length > 1 ? lines.Length : 1;
-            lastLineLength = lines[^1].Length;
+            EndLine++;
+
+            int charsToAdvance = valueSpan[pos + 1] == '\n' ? 2 : 1;
+            valueSpan = valueSpan[(pos + charsToAdvance)..];
+
+            pos = valueSpan.IndexOfAny(LineBreaks);
+            lastLineLength = valueSpan.Length;
         }
 
-        EndLine = Line + lineCount - 1;
         var endLineOffset = EndLine != Line ? lastLineLength : Column + Value.Length;
         EndColumn = endLineOffset;
     }
