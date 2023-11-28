@@ -15,15 +15,15 @@ public class IdentifierAndKeywordChannel
 
     public bool Consume(CodeReader code, LexerOutput output)
     {
-        var builder = new StringBuilder();
-        if (code.PopTo(regex, builder) <= 0)
+        var span = code.PopTo(regex);
+        if (span.IsEmpty)
         {
             return false;
         }
 
         Debug.Assert(code.PreviousCursor != null, "code.PreviousCursor != null");
 
-        var word = builder.ToString();
+        var word = span.ToString();
         var wordOriginal = word;
         if (!caseSensitive)
         {
@@ -39,7 +39,6 @@ public class IdentifierAndKeywordChannel
             .WithColumn(code.PreviousCursor.Column)
             .Build();
         output.AddToken(token);
-        builder.Clear();
         return true;
     }
 }

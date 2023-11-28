@@ -8,6 +8,6 @@ public class DiscardChannel(Regex regex) : IChannel<LexerOutput>
 {
     public bool Consume(CodeReader code, LexerOutput output)
     {
-        return code.PopTo(regex, null) != -1;
+        return code.PopTo(regex) != ReadOnlySpan<char>.Empty;
     }
 }

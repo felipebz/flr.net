@@ -54,12 +54,7 @@ public class CodeReader : CodeBuffer
         }
     }
 
-    public int PopTo(Regex matcher, StringBuilder? appendable)
-    {
-        return PopTo(matcher, null, appendable);
-    }
-
-    public int PopTo(Regex matcher, Regex? afterMatcher, StringBuilder? appendable)
+    public ReadOnlySpan<char> PopTo(Regex matcher, Regex? afterMatcher = null)
     {
         var match = matcher.Match(Buffer, BufferPosition, Buffer.Length - BufferPosition);
         if (match.Success && afterMatcher != null)
@@ -68,21 +63,18 @@ public class CodeReader : CodeBuffer
                 Buffer.Length - (BufferPosition + match.Length));
             if (!afterMatch.Success)
             {
-                return -1;
+                return ReadOnlySpan<char>.Empty;
             }
         }
 
         if (match.Success)
         {
             PreviousCursor = _cursor.Clone();
-            for (var i = 0; i < match.Length; i++)
-            {
-                appendable?.Append(Pop());
-            }
+            Pop(match.ValueSpan.Length);
 
-            return match.Length;
+            return match.ValueSpan;
         }
 
-        return -1;
+        return ReadOnlySpan<char>.Empty;
     }
 }

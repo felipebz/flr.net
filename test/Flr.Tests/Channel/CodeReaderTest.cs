@@ -51,13 +51,14 @@ public partial class CodeReaderTest
     public void TestPopToWithRegex()
     {
         var reader = new CodeReader(new StringReader("123ABC"));
-        var token = new StringBuilder();
-        Assert.Equal(3, reader.PopTo(DigitsRegex(), token));
-        Assert.Equal("123", token.ToString());
-        Assert.Equal(-1, reader.PopTo(DigitsRegex(), token));
-        Assert.Equal(3, reader.PopTo(CharRegex(), token));
-        Assert.Equal("123ABC", token.ToString());
-        Assert.Equal(-1, reader.PopTo(CharRegex(), token));
+
+        var span = reader.PopTo(DigitsRegex());
+        Assert.Equal("123", span.ToString());
+        Assert.True(reader.PopTo(DigitsRegex()).IsEmpty);
+
+        span = reader.PopTo(CharRegex());
+        Assert.Equal("ABC", span.ToString());
+        Assert.True(reader.PopTo(CharRegex()).IsEmpty);
     }
 
     [Fact]
@@ -65,11 +66,12 @@ public partial class CodeReaderTest
     {
         var digitMatcher = new Regex("^\\d+");
         var alphabeticMatcher = new Regex("^[a-zA-Z]+");
-        var token = new StringBuilder();
-        Assert.Equal(-1, new CodeReader(new StringReader("123 ABC")).PopTo(digitMatcher, alphabeticMatcher, token));
-        Assert.Equal("", token.ToString());
-        Assert.Equal(3, new CodeReader(new StringReader("123ABCD")).PopTo(digitMatcher, alphabeticMatcher, token));
-        Assert.Equal("123", token.ToString());
+
+        var span = new CodeReader(new StringReader("123 ABC")).PopTo(digitMatcher, alphabeticMatcher);
+        Assert.True(span.IsEmpty);
+
+        span = new CodeReader(new StringReader("123ABCD")).PopTo(digitMatcher, alphabeticMatcher);
+        Assert.Equal("123", span.ToString());
     }
 
     [GeneratedRegex("\\d+")]
