@@ -5,13 +5,16 @@ namespace Flr.Impl.Channel;
 
 public class PunctuatorChannel : IChannel<LexerOutput>
 {
-    private readonly ITokenType[] _sortedPunctuators;
+    private readonly (ITokenType Type, string Value, char[] Chars)[] _sortedPunctuators;
     private readonly int _lookahead;
 
     public PunctuatorChannel(IEnumerable<ITokenType> punctuators)
     {
-        _sortedPunctuators = punctuators.OrderByDescending(x => x.Value.Length).ToArray();
-        _lookahead = _sortedPunctuators.First().Value.Length;
+        _sortedPunctuators = punctuators
+            .OrderByDescending(x => x.Value.Length)
+            .Select(x => (x, x.Value, x.Value.ToCharArray()))
+            .ToArray();
+        _lookahead = _sortedPunctuators.First().Chars.Length;
     }
 
     public bool Consume(CodeReader code, LexerOutput output)
@@ -19,13 +22,13 @@ public class PunctuatorChannel : IChannel<LexerOutput>
         var next = code.Peek(_lookahead);
         foreach (var punctuator in _sortedPunctuators)
         {
-            if (!next[..punctuator.Value.Length].SequenceEqual(punctuator.Value.ToCharArray()))
+            if (!ArraysEquals(punctuator.Chars, next))
             {
                 continue;
             }
 
             var token = Token.Builder()
-                .WithType(punctuator)
+                .WithType(punctuator.Type)
                 .WithValueAndOriginalValue(punctuator.Value)
                 .WithLine(code.LinePosition)
                 .WithColumn(code.ColumnPosition)
@@ -36,5 +39,18 @@ public class PunctuatorChannel : IChannel<LexerOutput>
         }
 
         return false;
+    }
+
+    private static bool ArraysEquals(IReadOnlyList<char> punctuatorChars, IReadOnlyList<char> next)
+    {
+        for (var i = 0; i < punctuatorChars.Count; i++)
+        {
+            if (punctuatorChars[i] != next[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
