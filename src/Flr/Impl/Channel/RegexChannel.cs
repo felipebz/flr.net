@@ -12,7 +12,7 @@ public class RegexChannel(ITokenType type, Regex regex) : IChannel<LexerOutput>
     public bool Consume(CodeReader code, LexerOutput output)
     {
         var span = code.PopTo(regex);
-        if (span.IsEmpty)
+        if (span.Length == 0)
         {
             return false;
         }

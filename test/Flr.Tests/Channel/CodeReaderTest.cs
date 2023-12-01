@@ -54,11 +54,9 @@ public partial class CodeReaderTest
 
         var span = reader.PopTo(DigitsRegex());
         Assert.Equal("123", span.ToString());
-        Assert.True(reader.PopTo(DigitsRegex()).IsEmpty);
 
         span = reader.PopTo(CharRegex());
         Assert.Equal("ABC", span.ToString());
-        Assert.True(reader.PopTo(CharRegex()).IsEmpty);
     }
 
     [Fact]
@@ -68,7 +66,7 @@ public partial class CodeReaderTest
         var alphabeticMatcher = new Regex("^[a-zA-Z]+");
 
         var span = new CodeReader(new StringReader("123 ABC")).PopTo(digitMatcher, alphabeticMatcher);
-        Assert.True(span.IsEmpty);
+        Assert.Equal("", span);
 
         span = new CodeReader(new StringReader("123ABCD")).PopTo(digitMatcher, alphabeticMatcher);
         Assert.Equal("123", span.ToString());

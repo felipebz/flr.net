@@ -16,7 +16,7 @@ public class IdentifierAndKeywordChannel
     public bool Consume(CodeReader code, LexerOutput output)
     {
         var span = code.PopTo(regex);
-        if (span.IsEmpty)
+        if (span.Length == 0)
         {
             return false;
         }

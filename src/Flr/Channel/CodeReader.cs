@@ -54,27 +54,31 @@ public class CodeReader : CodeBuffer
         }
     }
 
-    public ReadOnlySpan<char> PopTo(Regex matcher, Regex? afterMatcher = null)
+    public string PopTo(Regex matcher, Regex? afterMatcher = null)
     {
-        var match = matcher.Match(Buffer, BufferPosition, Buffer.Length - BufferPosition);
-        if (match.Success && afterMatcher != null)
+        var enumerator = matcher.EnumerateMatches(Buffer.AsSpan(BufferPosition));
+        var success = enumerator.MoveNext();
+        var match = enumerator.Current;
+        if (success)
         {
-            var afterMatch = afterMatcher.Match(Buffer, (BufferPosition + match.Length),
-                Buffer.Length - (BufferPosition + match.Length));
-            if (!afterMatch.Success)
+            if (afterMatcher != null)
             {
-                return ReadOnlySpan<char>.Empty;
+                {
+                    if (!afterMatcher.IsMatch(Buffer.AsSpan(BufferPosition + match.Length)))
+                    {
+                        return string.Empty;
+                    }
+                }
             }
-        }
 
-        if (match.Success)
-        {
             PreviousCursor = _cursor.Clone();
-            Pop(match.ValueSpan.Length);
+            var valor = Buffer.Substring(BufferPosition, match.Length);
+            Pop(match.Length);
 
-            return match.ValueSpan;
+            return valor;
         }
 
-        return ReadOnlySpan<char>.Empty;
+        return string.Empty;
+        return string.Empty;
     }
 }
