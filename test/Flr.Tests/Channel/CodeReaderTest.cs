@@ -29,25 +29,6 @@ public partial class CodeReaderTest
     }
 
     [Fact]
-    public void TestPeekTo()
-    {
-        var reader = new CodeReader(new StringReader("package org.sonar;"));
-        var result = new StringBuilder();
-        reader.PeekTo(endFlag => 'r' == endFlag, result);
-        Assert.Equal("package o", result.ToString());
-        Assert.Equal('p', reader.Peek()); // never called pop()
-    }
-
-    [Fact]
-    public void PeekToShouldStopAtEndOfInput()
-    {
-        var reader = new CodeReader("foo");
-        var result = new StringBuilder();
-        reader.PeekTo(_ => false, result);
-        Assert.Equal("foo", result.ToString());
-    }
-
-    [Fact]
     public void TestPopToWithRegex()
     {
         var reader = new CodeReader(new StringReader("123ABC"));

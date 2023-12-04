@@ -35,17 +35,6 @@ public class CodeReader : CodeBuffer
         return Buffer.AsSpan(BufferPosition, max);
     }
 
-    public void PeekTo(Func<char, bool> matcher, StringBuilder builder)
-    {
-        var index = 0;
-        var nextChar = CharAt(index);
-        while (nextChar != char.MinValue && !matcher(nextChar))
-        {
-            builder.Append(nextChar);
-            nextChar = CharAt(++index);
-        }
-    }
-
     public ReadOnlySpan<char> PopTo(Regex matcher, Regex? afterMatcher = null)
     {
         var enumerator = matcher.EnumerateMatches(Buffer.AsSpan(BufferPosition));
