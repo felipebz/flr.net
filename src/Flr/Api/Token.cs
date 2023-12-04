@@ -6,28 +6,21 @@ public class Token
 {
     private static readonly SearchValues<char> LineBreaks = SearchValues.Create("\n\r");
 
-    public ITokenType Type { get; }
-    public string Value { get; }
-    public string OriginalValue { get; }
-    public int Line { get; }
-    public int Column { get; }
-    public int EndLine { get; }
-    public int EndColumn { get; }
-    public IList<Trivia> Trivia { get; }
-    public bool GeneratedCode { get; }
-    public bool HasTrivia => Trivia.Any();
+    private List<Trivia>? _trivias;
 
-    private Token(TokenBuilder builder)
+    public ITokenType Type { get; private set; } = null!;
+    public string Value { get; private set; } = null!;
+    public string OriginalValue { get; private set; } = null!;
+    public int Line { get; private set; }
+    public int Column { get; private set; }
+    public int EndLine { get; private set; }
+    public int EndColumn { get; private set; }
+    public IList<Trivia> Trivia { get => _trivias ?? new List<Trivia>(); }
+    public bool GeneratedCode { get; private set; }
+    public bool HasTrivia => _trivias is { Count: > 0 };
+
+    private void Build()
     {
-        Type = builder.Type;
-        Value = builder.Value;
-        OriginalValue = builder.OriginalValue;
-        Line = builder.Line;
-        Column = builder.Column;
-        Trivia = builder.Trivia;
-        GeneratedCode = builder.GeneratedCode;
-        EndLine = Line;
-
         var lastLineLength = 0;
 
         var valueSpan = Value.AsSpan();
@@ -45,11 +38,6 @@ public class Token
 
         var endLineOffset = EndLine != Line ? lastLineLength : Column + Value.Length;
         EndColumn = endLineOffset;
-    }
-
-    internal static Token CreateInstance(TokenBuilder builder)
-    {
-        return new Token(builder);
     }
 
     public bool IsOnSameLineAs(Token token)
@@ -74,13 +62,7 @@ public class Token
 
     public class TokenBuilder
     {
-        public ITokenType Type { get; set; } = null!;
-        public string Value { get; set; } = "";
-        public string OriginalValue { get; set; } = "";
-        public int Line { get; set; } = 0;
-        public int Column { get; set; } = -1;
-        public IList<Trivia> Trivia { get; set; } = new List<Trivia>();
-        public bool GeneratedCode { get; set; } = false;
+        private readonly Token _result = new();
 
         public TokenBuilder()
         {
@@ -88,74 +70,76 @@ public class Token
 
         public TokenBuilder(Token token)
         {
-            Type = token.Type;
-            Value = token.Value;
-            OriginalValue = token.OriginalValue;
-            Line = token.Line;
-            Column = token.Column;
-            Trivia = token.Trivia;
-            GeneratedCode = token.GeneratedCode;
+            _result.Type = token.Type;
+            _result.Value = token.Value;
+            _result.OriginalValue = token.OriginalValue;
+            _result.Line = token.Line;
+            _result.Column = token.Column;
+            _result._trivias = token._trivias;
+            _result.GeneratedCode = token.GeneratedCode;
         }
 
         public TokenBuilder WithType(ITokenType type)
         {
-            Type = type;
+            _result.Type = type;
             return this;
         }
 
         public TokenBuilder WithValue(string value)
         {
-            Value = value;
+            _result.Value = value;
             return this;
         }
 
         public TokenBuilder WithValueAndOriginalValue(string sameValue)
         {
-            Value = sameValue;
-            OriginalValue = sameValue;
+            _result.Value = sameValue;
+            _result.OriginalValue = sameValue;
             return this;
         }
 
         public TokenBuilder WithValueAndOriginalValue(string value, string originalValue)
         {
-            Value = value;
-            OriginalValue = originalValue;
+            _result.Value = value;
+            _result.OriginalValue = originalValue;
             return this;
         }
 
         public TokenBuilder WithLine(int line)
         {
-            Line = line;
+            _result.Line = line;
             return this;
         }
 
         public TokenBuilder WithColumn(int column)
         {
-            Column = column;
+            _result.Column = column;
             return this;
         }
 
         public TokenBuilder WithGeneratedCode(bool generatedCode)
         {
-            GeneratedCode = generatedCode;
+            _result.GeneratedCode = generatedCode;
             return this;
         }
 
-        public TokenBuilder WithTrivia(IList<Trivia> trivia)
+        public TokenBuilder WithTrivia(IEnumerable<Trivia> trivia)
         {
-            Trivia = trivia.ToList();
+            _result._trivias = trivia.ToList();
             return this;
         }
 
         public TokenBuilder AddTrivia(Trivia trivia)
         {
-            Trivia.Add(trivia);
+            _result._trivias ??= new List<Trivia>();
+            _result._trivias.Add(trivia);
             return this;
         }
 
         public Token Build()
         {
-            return CreateInstance(this);
+            _result.Build();
+            return _result;
         }
     }
 }
